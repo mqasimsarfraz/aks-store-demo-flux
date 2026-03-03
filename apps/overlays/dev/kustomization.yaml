@@ -7,14 +7,14 @@ resources:
 # DEMO TIP: To show Flux picking up changes, try one of these:
 #
 # 1. Scale store-front replicas (uncomment below, commit, push):
-# patches:
-#   - target:
-#       kind: Deployment
-#       name: store-front
-#     patch: |
-#       - op: replace
-#         path: /spec/replicas
-#         value: 3
+patches:
+  - target:
+      kind: Deployment
+      name: store-front
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 3
 #
 # 2. Change an image tag:
 # images:
