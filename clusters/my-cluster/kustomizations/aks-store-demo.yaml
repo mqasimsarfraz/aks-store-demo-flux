@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: aks-store-demo
+  namespace: flux-system
+spec:
+  interval: 5m              # Reconcile every 5 minutes (drift correction)
+  targetNamespace: pets      # Deploy everything into the "pets" namespace
+  sourceRef:
+    kind: GitRepository
+    name: aks-store-demo
+  path: ./apps/overlays/dev  # Points to the dev overlay
+  prune: true                # Delete resources removed from Git
+  wait: true                 # Wait for resources to become ready
+  timeout: 5m
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: store-front
+      namespace: pets

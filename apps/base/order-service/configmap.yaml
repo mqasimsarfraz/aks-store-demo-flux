@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-service-configs
+data:
+  ORDER_QUEUE_PORT: "5672"
+  ORDER_QUEUE_HOSTNAME: "rabbitmq"
+  ORDER_QUEUE_NAME: "orders"
+  FASTIFY_ADDRESS: "0.0.0.0"

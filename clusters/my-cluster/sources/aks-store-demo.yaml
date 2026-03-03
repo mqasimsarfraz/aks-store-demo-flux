@@ -1,0 +1,12 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: aks-store-demo
+  namespace: flux-system
+spec:
+  interval: 1m        # Poll every 1 minute — fast enough to demo "push → deploy"
+  url: https://github.com/ashu8912/aks-store-demo-flux
+  ref:
+    branch: main
+  secretRef:
+    name: flux-system  # Only needed for private repos; remove for public repos
