@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: store-front
 spec:
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 8080
   selector:
-    app: store-front-broken
-  type: LoadBalancer
+    app: store-front
