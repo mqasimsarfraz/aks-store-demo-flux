@@ -34,3 +34,10 @@ spec:
             limits:
               cpu: 1000m
               memory: 512Mi
+        - name: virtual-customer
+          image: ghcr.io/azure-samples/aks-store-demo/virtual-customer:2.1.0
+          env:
+            - name: ORDER_SERVICE_URL
+              value: http://localhost:8080/api/orders
+            - name: ORDERS_PER_HOUR
+              value: "1200"
