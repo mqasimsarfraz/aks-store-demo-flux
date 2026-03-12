@@ -14,12 +14,19 @@ spec:
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: store-front-nginx-conf
       containers:
         - name: store-front
           image: ghcr.io/azure-samples/aks-store-demo/store-front:2.1.0
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: store-front
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
           resources:
             requests:
               cpu: 1m

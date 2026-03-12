@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: store-front-nginx-conf
+data:
+  default.conf: |
+    server {
+        listen       8080;
+        listen  [::]:8080;
+        server_name  localhost;
+
+        #access_log  /var/log/nginx/host.access.log  main;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html; # for spa routing
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+
+        location /health {
+            default_type application/json;
+            return 200 '{"status":"ok","version":"2.1.0"}';
+        }
+
+        resolver 10.0.0.10 valid=5s;
+
+        location /api/orders {
+            set $order_service http://order-service.pets.svc.cluster.local:3000;
+            proxy_pass $order_service/;
+            proxy_http_version 1.1;
+        }
+
+        location /api/products {
+            set $product_service http://product-service.pets.svc.cluster.local:3002;
+            proxy_pass $product_service/;
+            proxy_http_version 1.1;
+        }
+    }
