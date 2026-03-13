@@ -5,43 +5,40 @@ metadata:
 data:
   default.conf: |
     server {
-        listen       8080;
-        listen  [::]:8080;
-        server_name  localhost;
+      listen 8080;
+      server_name localhost;
 
-        #access_log  /var/log/nginx/host.access.log  main;
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+      }
 
-        location / {
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
-            try_files $uri $uri/ /index.html; # for spa routing
-        }
+      location /api/products {
+        proxy_pass http://product-service:3002;
+      }
 
-        #error_page  404              /404.html;
+      location /api/categories {
+        proxy_pass http://product-service:3002;
+      }
 
-        # redirect server error pages to the static page /50x.html
-        #
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   /usr/share/nginx/html;
-        }
+      location /api/orders {
+        proxy_pass http://orders-service:3000;
+      }
 
-        location /health {
-            default_type application/json;
-            return 200 '{"status":"ok","version":"2.1.0"}';
-        }
+      location /api/checkout {
+        proxy_pass http://checkout-service:3004;
+      }
 
-        resolver 10.0.0.10 valid=5s;
+      location /api/makeline {
+        proxy_pass http://makeline-service:3001;
+      }
 
-        location /api/orders {
-            set $order_service http://order-service.pets.svc.cluster.local:3000;
-            proxy_pass $order_service/;
-            proxy_http_version 1.1;
-        }
+      location /api/ai {
+        proxy_pass http://ai-service:5001;
+      }
 
-        location /api/products {
-            set $product_service http://product-service.pets.svc.cluster.local:3002;
-            proxy_pass $product_service/;
-            proxy_http_version 1.1;
-        }
+      location /api/health {
+        return 200;
+      }
     }
