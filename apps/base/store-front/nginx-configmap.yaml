@@ -34,7 +34,9 @@ data:
         resolver 10.0.0.10 valid=5s;
 
         location /api/orders {
-            set $order_service http://order-service.pets.svc.cluster.local:3000;
+            # NOTE: service is named "orders-service" (not "order-service").
+            # Using the wrong name causes CoreDNS NXDOMAIN and nginx returns 502.
+            set $order_service http://orders-service.pets.svc.cluster.local:3000;
             proxy_pass $order_service/;
             proxy_http_version 1.1;
         }
