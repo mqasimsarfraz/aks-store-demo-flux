@@ -31,14 +31,23 @@ data:
             return 200 '{"status":"ok","version":"2.1.0"}';
         }
 
+        # use kube-dns (CoreDNS) to resolve service names at runtime since we
+        # use variables in proxy_pass — nginx won't resolve them at startup otherwise.
+        # the valid=5s ensures we pick up endpoint changes reasonably quickly.
         resolver 10.0.0.10 valid=5s;
 
+        # reverse proxy to order-service
+        # handles order creation, retrieval, and management via the orders API.
+        # ensure the hostname aligns with the order-service Kubernetes Service name
         location /api/orders {
             set $order_service http://order-service.pets.svc.cluster.local:3000;
             proxy_pass $order_service/;
             proxy_http_version 1.1;
         }
 
+        # reverse proxy to product-service
+        # serves the product catalog — same pattern as above with dynamic resolution.
+        # ensure the hostname aligns with the product-service Kubernetes Service name
         location /api/products {
             set $product_service http://product-service.pets.svc.cluster.local:3002;
             proxy_pass $product_service/;
